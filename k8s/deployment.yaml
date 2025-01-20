@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-pulumi-service
+  template:
+    metadata:
+      labels:
+        app: my-pulumi-service
+    spec:
+      containers:
+      - name: cluster-microservice
+        image: cluster-microservice:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SQS_QUEUE_URL
+          value: "https://sqs.us-east-1.amazonaws.com/160885293398/containerClusterQueue-0dea6c4"
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_SECRET_ACCESS_KEY
+        - name: AWS_DEFAULT_REGION
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_DEFAULT_REGION
+        ports:
+        - containerPort: 8080 # Cambia este valor si el contenedor usa un puerto diferente
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

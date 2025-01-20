@@ -1,0 +1,6 @@
+destroy_resources.py
+
+venv/
+.env/
+
+__pycache__/
