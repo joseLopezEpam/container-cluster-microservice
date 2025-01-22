@@ -3,13 +3,9 @@ import json
 import logging
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
-from custom_pulumi_automation import deploy_infrastructure
 
-# Configuración básica de logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# Importa la función que hace el despliegue
+from .custom_pulumi_automation import deploy_infrastructure
 
 class QueueConsumer:
     """
@@ -34,7 +30,6 @@ class QueueConsumer:
                     WaitTimeSeconds=self.wait_time
                 )
 
-                # Verificar si hay mensajes en la cola
                 if 'Messages' in response:
                     for msg in response['Messages']:
                         try:
@@ -45,7 +40,7 @@ class QueueConsumer:
                             body = json.loads(msg['Body'])
                             logging.info(f"Procesando payload: {body}")
 
-                            # Llamamos a Pulumi Automation API
+                            # Despliegue con Pulumi
                             deploy_infrastructure(body)
 
                             # Eliminamos el mensaje de la cola
@@ -66,5 +61,4 @@ class QueueConsumer:
             except Exception as e:
                 logging.error(f"Error inesperado: {e}")
 
-            # Esperamos antes del siguiente ciclo
             time.sleep(5)

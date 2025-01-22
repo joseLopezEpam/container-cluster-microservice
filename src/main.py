@@ -1,8 +1,8 @@
 import os
 import logging
-from queue_consumer import QueueConsumer
+# Importamos de este mismo paquete la clase QueueConsumer
+from .queue_consumer import QueueConsumer
 
-# Configuración básica de logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
@@ -17,7 +17,6 @@ def main():
         logging.error("La variable de entorno SQS_QUEUE_URL no está definida o está vacía.")
         raise ValueError("Debe definir la variable SQS_QUEUE_URL antes de ejecutar la aplicación.")
 
-    # Verificar que la URL tenga el formato correcto
     if not sqs_queue_url.startswith("https://sqs."):
         logging.error(f"El valor de SQS_QUEUE_URL no es válido: {sqs_queue_url}")
         raise ValueError(f"SQS_QUEUE_URL no tiene un formato válido: {sqs_queue_url}")
